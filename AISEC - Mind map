@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Security (AISEC) Mind Map Framework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: auto;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #ffffff;
+        }
+
+        .mindmap-container {
+            position: relative;
+            width: 1200px;
+            height: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            background: linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.8) 100%);
+            z-index: 1;
+            border-radius: 1px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .line-1 {
+            top: 35%;
+            left: 58%;
+            width: 280px;
+            height: 2px;
+            transform: rotate(-25deg);
+            transform-origin: left center;
+        }
+
+        .line-2 {
+            top: 65%;
+            left: 58%;
+            width: 280px;
+            height: 2px;
+            transform: rotate(25deg);
+            transform-origin: left center;
+        }
+
+        .line-3 {
+            top: 35%;
+            right: 58%;
+            width: 280px;
+            height: 2px;
+            transform: rotate(25deg);
+            transform-origin: right center;
+        }
+
+        .line-4 {
+            top: 50%;
+            right: 52%;
+            width: 300px;
+            height: 2px;
+            transform: translateY(-50%);
+            transform-origin: right center;
+        }
+
+        .line-5 {
+            top: 65%;
+            right: 58%;
+            width: 280px;
+            height: 2px;
+            transform: rotate(-25deg);
+            transform-origin: right center;
+        }
+
+        .central-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px 35px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            border: 2px solid #ffffff;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+            100% { box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6); }
+        }
+
+        .central-hub:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .branch-container {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        /* When branch is active, increase z-index to ensure dropdown appears on top */
+        .branch-container.active {
+            z-index: 1000;
+        }
+
+        /* Branch positioning adjusted for better spacing */
+        .branch-1 { top: 15%; right: 10%; } /* Risk Management - top right */
+        .branch-2 { bottom: 15%; right: 10%; } /* Governance Framework - bottom right */
+        .branch-3 { top: 15%; left: 10%; } /* Change Management - top left */
+        .branch-4 { top: 50%; left: 5%; transform: translateY(-50%); } /* Issue Management - moved further left */
+        .branch-5 { bottom: 15%; left: 10%; } /* Blue Team Operations - bottom left */
+
+        .branch-node {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            min-width: 180px;
+            position: relative;
+        }
+
+        .branch-container:hover .branch-node {
+            transform: scale(1.03);
+            box-shadow: 0 12px 35px rgba(79, 172, 254, 0.4);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.4);
+        }
+
+        .sub-branches {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 280px;
+            z-index: 1001;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Change Management dropdown - position to the right to avoid overlap */
+        .branch-3 .sub-branches {
+            left: 100%;
+            top: 0;
+            transform: translateX(20px);
+            margin-left: 10px;
+            margin-top: 0;
+        }
+
+        /* Issue Management dropdown - position to the right to avoid overlap */
+        .branch-4 .sub-branches {
+            left: 100%;
+            top: 0;
+            transform: translateX(20px);
+            margin-left: 10px;
+            margin-top: 0;
+        }
+
+        /* Blue Team Operations dropdown - position above to avoid overlap */
+        .branch-5 .sub-branches {
+            top: -100%;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .branch-container.active .sub-branches {
+            opacity: 1;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .sub-branches::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sub-branches::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .sub-branches::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 3px;
+        }
+
+        .sub-branch {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            color: #2c3e50;
+            padding: 10px 14px;
+            margin: 6px 0;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid #4facfe;
+            line-height: 1.4;
+        }
+
+        .framework-header, .action-header {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            color: white !important;
+            font-weight: 700 !important;
+            text-align: center !important;
+            margin: 12px 0 6px 0 !important;
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border-left: none !important;
+        }
+
+        .kpi-indicator {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 15px;
+            margin: 8px 0;
+            display: block;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .sla-indicator {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 15px;
+            margin: 8px 0;
+            display: block;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(254, 202, 87, 0.3);
+        }
+
+        .tooltip {
+            position: fixed;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 1500;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -6px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 6px solid #2c3e50;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .title-header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            z-index: 400;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 1200px) {
+            .mindmap-container {
+                width: 900px;
+                height: 600px;
+            }
+
+            .central-hub {
+                padding: 20px 30px;
+                font-size: 18px;
+            }
+
+            .branch-1 { top: 12%; right: 8%; }
+            .branch-2 { bottom: 12%; right: 8%; }
+            .branch-3 { top: 12%; left: 8%; }
+            .branch-4 { top: 50%; left: 3%; transform: translateY(-50%); }
+            .branch-5 { bottom: 12%; left: 8%; }
+
+            .branch-node {
+                padding: 12px 20px;
+                font-size: 13px;
+                min-width: 160px;
+            }
+
+            .line-1, .line-2, .line-3, .line-5 {
+                width: 200px;
+            }
+
+            .line-4 {
+                width: 220px;
+            }
+
+            .sub-branches {
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title-header">AISEC Framework Mind Map</div>
+    
+    <div class="mindmap-container">
+        <!-- Connection Lines -->
+        <div class="connection-line line-1"></div>
+        <div class="connection-line line-2"></div>
+        <div class="connection-line line-3"></div>
+        <div class="connection-line line-4"></div>
+        <div class="connection-line line-5"></div>
+
+        <!-- Central Hub -->
+        <div class="central-hub" id="central">
+            AI Security<br>(AISEC)
+        </div>
+
+        <!-- Branch 1: Risk Management (Top Right) -->
+        <div class="branch-container branch-1" id="branch1">
+            <div class="step-number">1</div>
+            <div class="branch-node">Risk Management</div>
+            <div class="sub-branches">
+                <div class="sub-branch" data-tooltip="risk-assessment">New AI Risk Assessment Programs</div>
+                <div class="sub-branch" data-tooltip="insider-threat">Corporate Insider Threat Mitigation</div>
+                <div class="sub-branch" data-tooltip="supply-chain">AI Supply Chain Security Management</div>
+                <div class="sub-branch" data-tooltip="risk-monitoring">AI Risk Monitoring and Reporting Systems</div>
+                <div class="sub-branch" data-tooltip="nist-ai-rmf">Follow NIST AI Risk Management Framework</div>
+                <div class="sla-indicator">SLA: Third-Party AI Service Security Requirements</div>
+                <div class="kpi-indicator">KPI: High-Risk Vulnerabilities Mitigated Within Timeline</div>
+            </div>
+        </div>
+
+        <!-- Branch 2: Governance Frameworks (Bottom Right) -->
+        <div class="branch-container branch-2" id="branch2">
+            <div class="step-number">2</div>
+            <div class="branch-node">Governance Frameworks</div>
+            <div class="sub-branches">
+                <div class="sub-branch framework-header">Frameworks:</div>
+                <div class="sub-branch" data-tooltip="eu-ai-act">EU AI Act Regulatory Compliance</div>
+                <div class="sub-branch" data-tooltip="gdpr-protection">GDPR Training Data Protection</div>
+                
+                <div class="sub-branch action-header">Actions:</div>
+                <div class="sub-branch" data-tooltip="drata-compliance">Compliance Management on Drata</div>
+                <div class="sub-branch" data-tooltip="security-policies">AI Security Policies and Procedures</div>
+                <div class="sub-branch" data-tooltip="transparency">Transparency and Accountability Measures</div>
+                <div class="sub-branch" data-tooltip="stakeholder-engagement">Legal and Business Stakeholder Engagement</div>
+                <div class="kpi-indicator">KPI: Percentage of AI Systems Meeting Compliance Standards</div>
+            </div>
+        </div>
+
+        <!-- Branch 3: Change Management (Top Left) -->
+        <div class="branch-container branch-3" id="branch3">
+            <div class="step-number">3</div>
+            <div class="branch-node">Change Management</div>
+            <div class="sub-branches">
+                <div class="sub-branch" data-tooltip="team-collaboration">Product Development Team Collaboration</div>
+                <div class="sub-branch" data-tooltip="secure-sdlc">Secure Development Lifecycle Implementation</div>
+                <div class="sub-branch" data-tooltip="red-team">AI Red Team Operations</div>
+                <div class="sub-branch" data-tooltip="security-testing">Security Testing and Validation Protocols</div>
+                <div class="sub-branch" data-tooltip="staff-training">Staff Training and Security Awareness Programs</div>
+                <div class="sub-branch" data-tooltip="continuous-enhancement">Continuous Security Practice Enhancement</div>
+                <div class="kpi-indicator">KPI: Change Success Rate Without Security Incidents</div>
+            </div>
+        </div>
+
+        <!-- Branch 4: Issue Management (Center Left) -->
+        <div class="branch-container branch-4" id="branch4">
+            <div class="step-number">4</div>
+            <div class="branch-node">Issue Management</div>
+            <div class="sub-branches">
+                <div class="sub-branch" data-tooltip="issue-identification">AI Security Issue Identification and Logging</div>
+                <div class="sub-branch" data-tooltip="issue-prioritization">Security Issue Prioritization by Severity</div>
+                <div class="sub-branch" data-tooltip="root-cause">Root Cause Analysis for Security Incidents</div>
+                <div class="sub-branch" data-tooltip="stakeholder-communication">Stakeholder Communication and Updates</div>
+                <div class="sub-branch" data-tooltip="incident-response">Incident Response Team Coordination</div>
+                <div class="sub-branch" data-tooltip="resolution-tracking">Security Issue Resolution Tracking</div>
+                <div class="sub-branch" data-tooltip="post-incident">Post-Incident Security Improvements</div>
+                <div class="sla-indicator">SLA: Maximum Response Time for Critical Security Issues</div>
+                <div class="kpi-indicator">KPI: Average Time to Resolve Security Issues</div>
+            </div>
+        </div>
+
+        <!-- Branch 5: Blue Team Operations (Bottom Left) -->
+        <div class="branch-container branch-5" id="branch5">
+            <div class="step-number">5</div>
+            <div class="branch-node">Blue Team Operations</div>
+            <div class="sub-branches">
+                <div class="sub-branch" data-tooltip="continuous-monitoring">Continuous AI Security Monitoring</div>
+                <div class="sub-branch" data-tooltip="defense-systems">AI Defense System Implementation</div>
+                <div class="sub-branch" data-tooltip="anomaly-detection">Anomaly and Incident Detection Systems</div>
+                <div class="sub-branch" data-tooltip="security-audits">Regular Security Audit Assessments</div>
+                <div class="sub-branch" data-tooltip="incident-response-planning">AI-Specific Incident Response Planning</div>
+                <div class="sub-branch" data-tooltip="siem-integration">SIEM Integration for AI Security Events</div>
+                <div class="sub-branch" data-tooltip="tool-management">AI Security Technology and Tool Management</div>
+                <div class="kpi-indicator">KPI: Mean Time to Detect Security Incidents</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="expandAll()">Expand All</button>
+        <button class="control-btn" onclick="collapseAll()">Collapse All</button>
+        <button class="control-btn" onclick="resetView()">Reset View</button>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const branches = document.querySelectorAll('.branch-container');
+        const central = document.getElementById('central');
+        const tooltip = document.getElementById('tooltip');
+
+        // Tooltip content mapping
+        const tooltipContent = {
+            'risk-assessment': 'Systematic evaluation of AI-specific risks including model drift, adversarial attacks, data poisoning, and inference-time vulnerabilities across the entire AI lifecycle.',
+            'insider-threat': 'Controls to prevent unauthorized access to AI models, training data, and intellectual property by internal actors with privileged access.',
+            'supply-chain': 'Security assessment and monitoring of third-party AI components, pre-trained models, datasets, and external AI service providers.',
+            'risk-monitoring': 'Continuous monitoring capabilities to detect emerging risks and provide stakeholders with actionable security metrics and insights.',
+            'nist-ai-rmf': 'Implementation of NIST AI Risk Management Framework guidelines for comprehensive AI risk assessment and mitigation strategies.',
+            'eu-ai-act': 'Adherence to European Union AI Act requirements including risk categorization, conformity assessments, and mandatory security measures for high-risk AI systems.',
+            'nist-framework': 'Implementation of NIST AI RMF guidelines for trustworthy AI development, including governance, mapping, measuring, and managing AI risks.',
+            'drata-compliance': 'Automated compliance monitoring and reporting using Drata platform for AI security standards and regulatory requirements.',
+            'security-policies': 'Establishment of comprehensive governance documentation defining roles, responsibilities, and standardized processes for AI security management.',
+            'gdpr-protection': 'Implementation of GDPR compliance measures for AI training datasets including data minimization, consent management, and data subject rights.',
+            'transparency': 'Implementation of explainable AI practices, audit trails, and documentation to ensure AI decisions can be traced and validated.',
+            'stakeholder-engagement': 'Coordination with legal counsel, business leaders, and compliance teams to align AI security with organizational objectives.',
+            'team-collaboration': 'Cross-functional collaboration to analyze AI system architectures and integrate security measures throughout development.',
+            'secure-sdlc': 'Application of secure coding principles, threat modeling, and security-by-design practices for AI systems.',
+            'red-team': 'Systematic adversarial testing to identify vulnerabilities through simulated attacks and exploitation attempts.',
+            'security-testing': 'Comprehensive testing frameworks to validate security controls and assess model robustness.',
+            'staff-training': 'Educational initiatives to build AI security competency across teams, covering threats and secure practices.',
+            'continuous-enhancement': 'Iterative improvement of security processes based on lessons learned and emerging threats.',
+            'issue-identification': 'Systematic processes for discovering, documenting, and tracking security vulnerabilities in AI systems.',
+            'issue-prioritization': 'Risk-based classification and prioritization of security issues based on potential impact and exploitability.',
+            'root-cause': 'Thorough investigation methodologies to determine underlying causes of security failures.',
+            'stakeholder-communication': 'Structured communication protocols to keep relevant parties informed of security issues and responses.',
+            'incident-response': 'Orchestration of cross-functional teams during security incidents for rapid and effective resolution.',
+            'resolution-tracking': 'Systematic monitoring of security issue remediation progress and validation of fix effectiveness.',
+            'post-incident': 'Implementation of lessons learned and security enhancements based on incident analysis.',
+            'continuous-monitoring': 'Real-time surveillance of AI systems for anomalous behavior, performance degradation, and security incidents.',
+            'defense-systems': 'Deployment of security controls including input validation, output filtering, and behavioral monitoring.',
+            'anomaly-detection': 'Automated detection capabilities to identify unusual patterns and potential security breaches in AI operations.',
+            'security-audits': 'Periodic comprehensive reviews of AI security posture, control effectiveness, and compliance standards.',
+            'incident-response-planning': 'Specialized response procedures for AI security incidents including model compromise and adversarial attacks.',
+            'siem-integration': 'Integration of AI security telemetry with Security Information and Event Management systems.',
+            'tool-management': 'Selection, deployment, and maintenance of specialized security tools for AI model protection and monitoring.'
+        };
+
+        // Toggle branch expansion
+        branches.forEach(branch => {
+            branch.addEventListener('click', (e) => {
+                e.stopPropagation();
+                branches.forEach(otherBranch => {
+                    if (otherBranch !== branch) {
+                        otherBranch.classList.remove('active');
+                    }
+                });
+                branch.classList.toggle('active');
+            });
+        });
+
+        // Tooltip functionality with side positioning
+        function showTooltip(element, content) {
+            tooltip.innerHTML = content;
+            tooltip.classList.add('show');
+            const rect = element.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            let left = rect.right + 10;
+            let top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+            if (left + tooltipRect.width > window.innerWidth - 20) {
+                left = rect.left - tooltipRect.width - 10;
+                tooltip.style.setProperty('--arrow-direction', 'right');
+            } else {
+                tooltip.style.setProperty('--arrow-direction', 'left');
+            }
+            if (top < 20) top = 20;
+            if (top + tooltipRect.height > window.innerHeight - 20) {
+                top = window.innerHeight - tooltipRect.height - 20;
+            }
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('show');
+        }
+
+        document.querySelectorAll('.sub-branch[data-tooltip]').forEach(subBranch => {
+            subBranch.addEventListener('mouseenter', (e) => {
+                const tooltipKey = e.target.getAttribute('data-tooltip');
+                const content = tooltipContent[tooltipKey] || 'AI Security component - part of the AISEC framework';
+                showTooltip(e.target, content);
+            });
+            subBranch.addEventListener('mouseleave', hideTooltip);
+        });
+
+        // Control functions
+        function expandAll() {
+            branches.forEach(branch => branch.classList.add('active'));
+        }
+
+        function collapseAll() {
+            branches.forEach(branch => branch.classList.remove('active'));
+        }
+
+        function resetView() {
+            collapseAll();
+            hideTooltip();
+        }
+
+        // Central hub interaction
+        central.addEventListener('click', () => {
+            const isAnyActive = Array.from(branches).some(branch => branch.classList.contains('active'));
+            if (isAnyActive) {
+                collapseAll();
+            } else {
+                expandAll();
+            }
+        });
+
+        // Close branches when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.branch-container') && !e.target.closest('.central-hub')) {
+                collapseAll();
+            }
+        });
+
+        // Hide tooltip when scrolling or resizing
+        window.addEventListener('scroll', hideTooltip);
+        window.addEventListener('resize', hideTooltip);
+    </script>
+</body>
+</html>
