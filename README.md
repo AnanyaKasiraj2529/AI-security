@@ -54,21 +54,6 @@ A governance model structured across five pillars:
 
 The framework demonstrates how AI security integrates into enterprise GRC and SOC workflows.
 
----
-
-## 🏛 Governance Perspective
-
-The foundation aligns conceptually with:
-
-- EU AI Act risk-tier philosophy  
-- NIST AI Risk Management Framework principles  
-- Secure-by-design AI lifecycle thinking  
-- Enterprise governance and compliance models  
-
-It recognizes that AI security is not purely technical — it is organizational, regulatory, and operational.
-
----
-
 ## 🧠 Original Research & Structured Development
 
 This repository contains independently structured governance modeling and AI security planning developed through research and professional experience.
@@ -89,26 +74,3 @@ Future iterations may include:
 - AI security maturity assessment frameworks  
 - Governance-to-technical control traceability  
 
----
-
-## 🎯 Purpose
-
-This repository serves as a structured base for:
-
-- AI governance research  
-- Enterprise AI risk modeling  
-- Compliance architecture development  
-- Responsible AI security planning  
-
-It is designed to evolve as AI regulatory and security landscapes mature.
-
----
-
-## 🚀 Usage
-
-Open the HTML artifacts directly in a browser:
-
-```bash
-open AISEC.html
-open "ai_risk_vendor tool classification.html"
-```
