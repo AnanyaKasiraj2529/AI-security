@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI/ML Risk Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            color: #64748b;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 12px;
+        }
+        
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .tool-dot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-dot:hover {
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.4));
+        }
+        
+        .tool-dot.active {
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+        
+        .details-panel {
+            min-height: 500px;
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 500px;
+            color: #94a3b8;
+            text-align: center;
+        }
+        
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        
+        .tool-details {
+            display: none;
+        }
+        
+        .tool-details.active {
+            display: block;
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .tool-icon {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .tool-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        
+        .tool-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .badge-tier {
+            background: #64748b;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .metric-value {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        
+        .section {
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .bullet {
+            color: #3b82f6;
+            margin-top: 2px;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        
+        .info-box h3 {
+            color: #1e40af;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .info-box p {
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI/ML Tool Risk Assessment Matrix</h1>
+            <p>Supply Chain & Tech Operations Context</p>
+        </div>
+        
+        <div class="main-grid">
+            <div class="card">
+                <div class="card-title">
+                    🛡️ Risk Assessment Wheel
+                </div>
+                <div class="wheel-container">
+                    <svg id="riskWheel" viewBox="0 0 400 400" style="width: 100%; height: auto;">
+                        <defs>
+                            <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#dc2626" />
+                                <stop offset="100%" stop-color="#ef4444" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Outer ring -->
+                        <circle cx="200" cy="200" r="180" fill="none" stroke="#e2e8f0" stroke-width="35" opacity="0.3" />
+                        
+                        <!-- AI Categories -->
+                        <text x="200" y="20" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Generative AI</text>
+                        <text x="360" y="125" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Classification</text>
+                        <text x="340" y="290" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Recommendation</text>
+                        <text x="80" y="320" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Computer Vision</text>
+                        <text x="40" y="140" text-anchor="middle" font-size="9" font-weight="600" fill="#64748b">Predictive</text>
+                        
+                        <!-- Middle ring -->
+                        <circle cx="200" cy="200" r="145" fill="none" stroke="#cbd5e1" stroke-width="1" />
+                        
+                        <!-- T1 Critical Red - Top Right -->
+                        <path d="M 200 110 A 90 90 0 0 1 290 200 L 200 200 Z" fill="#fee2e2" stroke="#ef4444" stroke-width="2" />
+                        <text x="245" y="145" text-anchor="middle" font-size="14" font-weight="bold" fill="#dc2626">T1</text>
+                        <text x="245" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="#b91c1c">Critical</text>
+                        
+                        <!-- T2 High Orange - Top Left -->
+                        <path d="M 200 110 A 90 90 0 0 0 110 200 L 200 200 Z" fill="#ffedd5" stroke="#f97316" stroke-width="2" />
+                        <text x="155" y="145" text-anchor="middle" font-size="14" font-weight="bold" fill="#ea580c">T2</text>
+                        <text x="155" y="160" text-anchor="middle" font-size="9" font-weight="600" fill="#c2410c">High</text>
+                        
+                        <!-- T3 Low Green - Bottom Left -->
+                        <path d="M 110 200 A 90 90 0 0 0 200 290 L 200 200 Z" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
+                        <text x="155" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="#059669">T3</text>
+                        <text x="155" y="260" text-anchor="middle" font-size="9" font-weight="600" fill="#047857">Low</text>
+                        
+                        <!-- T2 Medium Yellow - Bottom Right -->
+                        <path d="M 200 290 A 90 90 0 0 0 290 200 L 200 200 Z" fill="#fef3c7" stroke="#eab308" stroke-width="2" />
+                        <text x="245" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="#ca8a04">T2</text>
+                        <text x="245" y="260" text-anchor="middle" font-size="9" font-weight="600" fill="#a16207">Medium</text>
+                        
+                        <!-- Axis lines -->
+                        <line x1="200" y1="200" x2="200" y2="50" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,2" />
+                        <line x1="200" y1="200" x2="350" y2="200" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,2" />
+                        
+                        <!-- Axis labels -->
+                        <text x="200" y="40" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">High Sensitivity</text>
+                        <text x="360" y="205" text-anchor="start" font-size="10" font-weight="600" fill="#64748b">High Impact</text>
+                        
+                        <!-- Tool dots will be added by JavaScript -->
+                        <g id="toolDots"></g>
+                    </svg>
+                    
+                    <div class="legend">
+                        <div class="legend-title">Risk Tiers</div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #ef4444;"></div>
+                            <span>T1 Critical</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #f97316;"></div>
+                            <span>T2 High</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #eab308;"></div>
+                            <span>T2 Medium</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #10b981;"></div>
+                            <span>T3 Low</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    ⚠️ Tool Details
+                </div>
+                <div class="details-panel">
+                    <div class="empty-state" id="emptyState">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p>Click on any dot to see tool details</p>
+                    </div>
+                    <div id="toolDetails"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>Assessment Framework</h3>
+            <p>
+                <strong>Y-axis (Business Impact):</strong> Potential effect on operations, revenue, or strategic goals if the tool fails or is compromised.<br>
+                <strong>X-axis (Data Sensitivity):</strong> Level of confidential, personal, or regulated data the tool processes.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const tools = [
+            // Critical Risk - Top Right Quadrant (High Sensitivity + High Impact)
+            // Angles 0-90 degrees - RED DOTS
+            {
+                id: 1, name: 'Financial AI', category: 'Critical Risk', tier: 'T1',
+                impact: 95, sensitivity: 90, color: '#ef4444', angle: 30, radius: 85,
+                examples: ['Automated invoicing', 'Fraud detection', 'Budget forecasting'],
+                concerns: ['Financial data exposure', 'Regulatory compliance', 'Audit trail requirements']
+            },
+            {
+                id: 2, name: 'Hiring AI', category: 'Critical Risk', tier: 'T1',
+                impact: 90, sensitivity: 85, color: '#ef4444', angle: 50, radius: 85,
+                examples: ['Resume screening', 'Interview analysis', 'Candidate ranking'],
+                concerns: ['Bias in hiring decisions', 'Legal liability', 'Privacy regulations']
+            },
+            {
+                id: 3, name: 'Customer Data AI', category: 'Critical Risk', tier: 'T1',
+                impact: 92, sensitivity: 95, color: '#ef4444', angle: 10, radius: 85,
+                examples: ['Predictive analytics', 'Personalization', 'Churn prediction'],
+                concerns: ['Data privacy laws', 'Customer trust', 'Security breaches']
+            },
+            
+            // T2 Medium - Top Left Quadrant (High Sensitivity + Low Impact)
+            // Angles 90-180 degrees - YELLOW DOTS
+            {
+                id: 4, name: 'HR Analytics', category: 'Medium Risk', tier: 'T2',
+                impact: 35, sensitivity: 80, color: '#eab308', angle: 120, radius: 85,
+                examples: ['Performance tracking', 'Attrition prediction', 'Skill gap analysis'],
+                concerns: ['Employee privacy', 'Morale impact', 'Data accuracy']
+            },
+            {
+                id: 5, name: 'Document Classification', category: 'Medium Risk', tier: 'T2',
+                impact: 40, sensitivity: 75, color: '#eab308', angle: 150, radius: 85,
+                examples: ['Contract analysis', 'Email sorting', 'Compliance checking'],
+                concerns: ['Sensitive data handling', 'Accuracy requirements', 'Access control']
+            },
+            {
+                id: 13, name: 'Sentiment Analysis', category: 'Medium Risk', tier: 'T2',
+                impact: 30, sensitivity: 65, color: '#eab308', angle: 100, radius: 85,
+                examples: ['Customer feedback', 'Brand monitoring', 'Review analysis'],
+                concerns: ['Data interpretation', 'Bias detection', 'Privacy concerns']
+            },
+            
+            // T3 Low Risk - Bottom Left Quadrant (Low Sensitivity + Low Impact)
+            // Angles 180-270 degrees - GREEN DOTS
+            {
+                id: 6, name: 'Content Generation', category: 'Low Risk', tier: 'T3',
+                impact: 30, sensitivity: 25, color: '#10b981', angle: 210, radius: 85,
+                examples: ['Marketing copy', 'Report summaries', 'Social media posts'],
+                concerns: ['Brand consistency', 'Quality control', 'Human oversight']
+            },
+            {
+                id: 7, name: 'Chatbot (FAQ)', category: 'Low Risk', tier: 'T3',
+                impact: 35, sensitivity: 20, color: '#10b981', angle: 230, radius: 85,
+                examples: ['Internal help desk', 'Documentation search', 'Basic queries'],
+                concerns: ['User experience', 'Escalation paths', 'Knowledge base accuracy']
+            },
+            {
+                id: 8, name: 'Grammar Check', category: 'Low Risk', tier: 'T3',
+                impact: 15, sensitivity: 15, color: '#10b981', angle: 250, radius: 85,
+                examples: ['Email enhancement', 'Document review', 'Translation assist'],
+                concerns: ['Minimal - standard tool', 'Data transmission', 'Accuracy']
+            },
+            {
+                id: 9, name: 'Computer Vision', category: 'Low Risk', tier: 'T3',
+                impact: 25, sensitivity: 30, color: '#10b981', angle: 190, radius: 85,
+                examples: ['Warehouse automation', 'Quality inspection', 'Asset tracking'],
+                concerns: ['Implementation cost', 'False positives', 'Hardware requirements']
+            },
+            
+            // T2 High - Bottom Right Quadrant (Low Sensitivity + High Impact)
+            // Angles 270-360 degrees - ORANGE DOTS
+            {
+                id: 10, name: 'Demand Forecasting', category: 'High Risk', tier: 'T2',
+                impact: 88, sensitivity: 35, color: '#f97316', angle: 340, radius: 85,
+                examples: ['Sales prediction', 'Inventory optimization', 'Seasonal analysis'],
+                concerns: ['Model accuracy', 'Business dependencies', 'Integration complexity']
+            },
+            {
+                id: 11, name: 'Code Assistant', category: 'High Risk', tier: 'T2',
+                impact: 80, sensitivity: 30, color: '#f97316', angle: 310, radius: 85,
+                examples: ['GitHub Copilot', 'Code review', 'Bug detection'],
+                concerns: ['IP protection', 'Code quality', 'Dependency on tool']
+            },
+            {
+                id: 12, name: 'Process Mining', category: 'High Risk', tier: 'T2',
+                impact: 85, sensitivity: 25, color: '#f97316', angle: 280, radius: 85,
+                examples: ['Workflow optimization', 'Bottleneck detection', 'Efficiency analysis'],
+                concerns: ['Operational changes', 'Employee monitoring', 'Implementation costs']
+            }
+        ];
+
+        let selectedToolId = null;
+
+        function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+            const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+            return {
+                x: centerX + (radius * Math.cos(angleInRadians)),
+                y: centerY + (radius * Math.sin(angleInRadians))
+            };
+        }
+
+        function renderToolDots() {
+            const dotsGroup = document.getElementById('toolDots');
+            dotsGroup.innerHTML = '';
+
+            tools.forEach(tool => {
+                const pos = polarToCartesian(200, 200, tool.radius, tool.angle);
+                const isActive = selectedToolId === tool.id;
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', pos.x);
+                circle.setAttribute('cy', pos.y);
+                circle.setAttribute('r', isActive ? 8 : 5);
+                circle.setAttribute('fill', tool.color);
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', '2');
+                circle.classList.add('tool-dot');
+                if (isActive) circle.classList.add('active');
+                
+                circle.addEventListener('click', () => selectTool(tool.id));
+                circle.addEventListener('mouseenter', () => {
+                    circle.setAttribute('r', 8);
+                });
+                circle.addEventListener('mouseleave', () => {
+                    if (!isActive) circle.setAttribute('r', 5);
+                });
+                
+                dotsGroup.appendChild(circle);
+            });
+        }
+
+        function selectTool(toolId) {
+            selectedToolId = selectedToolId === toolId ? null : toolId;
+            renderToolDots();
+            renderToolDetails();
+        }
+
+        function renderToolDetails() {
+            const emptyState = document.getElementById('emptyState');
+            const detailsContainer = document.getElementById('toolDetails');
+
+            if (!selectedToolId) {
+                emptyState.style.display = 'flex';
+                detailsContainer.innerHTML = '';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            const tool = tools.find(t => t.id === selectedToolId);
+
+            detailsContainer.innerHTML = `
+                <div class="tool-header">
+                    <div class="tool-name">${tool.name}</div>
+                </div>
+                <div class="tool-badges">
+                    <div class="badge" style="background-color: ${tool.color};">${tool.category}</div>
+                    <div class="badge badge-tier">${tool.tier}</div>
+                </div>
+                <div class="metrics">
+                    <div>
+                        <div class="metric-label">Business Impact</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${tool.impact}%; background-color: ${tool.color};"></div>
+                        </div>
+                        <div class="metric-value">${tool.impact}%</div>
+                    </div>
+                    <div>
+                        <div class="metric-label">Data Sensitivity</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${tool.sensitivity}%; background-color: ${tool.color};"></div>
+                        </div>
+                        <div class="metric-value">${tool.sensitivity}%</div>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Use Cases</div>
+                    ${tool.examples.map(ex => `
+                        <div class="list-item">
+                            <span class="bullet">•</span>
+                            <span>${ex}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="section">
+                    <div class="section-title">Key Concerns</div>
+                    ${tool.concerns.map(concern => `
+                        <div class="list-item">
+                            <span class="bullet">⚠️</span>
+                            <span>${concern}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Initialize
+        renderToolDots();
+        renderToolDetails();
+    </script>
+</body>
+</html>
