@@ -3,52 +3,51 @@
 This diagram models security risks and controls across a traditional machine learning lifecycle, emphasizing training integrity and deployment protection.
 
 ```mermaid
-flowchart LR
+flowchart TD
 
-%% =====================
-%% MLOps Pipeline
-%% =====================
+%% ===== PIPELINE (Light Grey) =====
 subgraph MLOps_Pipeline
 D[Data Sources]
 DP[Data Processing]
 T[Model Training]
-VAL[Model Validation]
-REG[Model Registry]
-DEP[Deployment Service]
+VAL[Validation]
+DEP[Deployment]
 end
 
-D --> DP --> T --> VAL --> REG --> DEP
+D --> DP --> T --> VAL --> DEP
 
-%% =====================
-%% Risks
-%% =====================
-subgraph Risks
+%% ===== RISKS (Light Pink) =====
 R1[Data Poisoning]
 R2[Dataset Leakage]
 R3[Model Tampering]
 R4[Model Extraction]
-end
 
-%% =====================
-%% Controls
-%% =====================
-subgraph Security_Controls
+%% ===== CONTROLS (Light Green) =====
 C1[Data Sanitization]
-C2[Secure Training Environment]
-C3[Model Integrity Checks]
-C4[Access Control & Monitoring]
-end
+C2[Secure Training]
+C3[Integrity Checks]
+C4[Access Control]
 
-%% Risk Mapping
-R1 --> C1
-R2 --> C1
-R3 --> C3
-R4 --> C4
+%% Connections
+R1 --> DP
+R2 --> DP
+R3 --> VAL
+R4 --> DEP
 
-%% Control Placement
 C1 --> DP
 C2 --> T
 C3 --> VAL
-C4 --> REG
 C4 --> DEP
+
+%% ===== ACCESSIBLE COLORS =====
+%% Using light fills with dark strokes for high contrast in Dark Mode
+classDef pipeline fill:#E5E4E2,color:#000,stroke:#333,stroke-width:2px;
+classDef risk fill:#FFB6C1,color:#000,stroke:#333,stroke-width:2px;
+classDef control fill:#BDFFA4,color:#000,stroke:#333,stroke-width:2px;
+classDef highlight fill:#FFFFC5,color:#000,stroke:#333,stroke-width:2px;
+
+class D,DP,T,VAL,DEP pipeline;
+class R1,R2,R3,R4 risk;
+class C1,C2,C3,C4 control;
+
 ```
