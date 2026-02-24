@@ -45,7 +45,7 @@ The AISEC framework provides a multi-layered approach to AI security, moving fro
 ## 🧠 1. Strategic Governance Mind Map
 The **AISEC Mind Map** serves as the central orchestration layer, visualizing five critical pillars required to secure an enterprise AI environment.
 
-<img width="384" height="155" alt="image" src="https://github.com/user-attachments/assets/815c4ed8-857f-44cf-86ce-670960a14e75" />
+<img width="749" height="287" alt="image" src="https://github.com/user-attachments/assets/af361e98-308b-464b-99c0-f326aeffafb9" />
 
 ### **Core Governance Pillars**
 *   **Risk Management**: Focuses on **Insider Threat Mitigation** and **AI Supply Chain Security**.
