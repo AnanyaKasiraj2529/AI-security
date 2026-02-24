@@ -20,57 +20,74 @@ It bridges:
 - Regulatory alignment (EU AI Act context, GDPR considerations)  
 - Enterprise risk management (ERM) integration  
 - Change and incident governance  
-- Blue team AI security operations  
+- Blue team AI security operations
+- MITTRE ATLAS & OWASP LLM TOP 10 based Threat Analysis.
+- Architectural undersanding of GenAI and MLops  
 
 AISEC is intentionally designed as a living governance foundation.
 
 ---
 
-## 📊 Included Artifacts
-
-### 1️⃣ AI/ML Risk Classification Matrix  
-📁 `ai_risk_vendor tool classification.html`
-
-An interactive visualization that categorizes AI systems based on:
-
-- Business Impact  
-- Data Sensitivity  
-- Tiered Risk Levels (T1 / T2 / T3)  
-
-This model reflects structured, risk-based AI classification aligned with emerging regulatory approaches.
+## 📌 Research Context
+This repository showcases **AISEC**, an original governance framework developed to address the critical security gap in AI/ML deployments. Focuses on "technology with impact," this project aligns technical threat modeling with real-world regulatory compliance, specifically the **EU AI Act**.
 
 ---
 
-### 2️⃣ AISEC Governance Architecture Mind Map  
-📁 `AISEC.html`
+## 🏛️ Project Overview
+The AISEC framework provides a multi-layered approach to AI security, moving from strategic policy to granular technical controls.
 
-A governance model structured across five pillars:
+1.  **Strategic Governance**: High-level orchestration of AI policy and issue management.
+2.  **Architectural Threat Modeling**: Deep-dive analysis of MLOps and GenAI/LLM pipelines.
+3.  **Operational Risk Assessment**: Data-driven classification of third-party AI/ML tools.
 
-1. **Risk Management**  
-2. **Governance & Compliance Alignment**  
-3. **Change Management for AI Systems**  
-4. **Issue & Incident Governance**  
-5. **Blue Team Operational Security for AI**
+---
 
-The framework demonstrates how AI security integrates into enterprise GRC and SOC workflows.
+## 🧠 1. Strategic Governance Mind Map
+The **AISEC Mind Map** serves as the central orchestration layer, visualizing five critical pillars required to secure an enterprise AI environment.
 
-## 🧠 Original Research & Structured Development
+<img width="384" height="155" alt="image" src="https://github.com/user-attachments/assets/815c4ed8-857f-44cf-86ce-670960a14e75" />
 
-This repository contains independently structured governance modeling and AI security planning developed through research and professional experience.
+### **Core Governance Pillars**
+*   **Risk Management**: Focuses on **Insider Threat Mitigation** and **AI Supply Chain Security**.
+*   **Blue Team Operations**: Active defense mechanisms and real-time adversarial detection.
+*   **Governance Frameworks**: Policy baselines ensuring alignment with global standards (e.g., NIST AI RMF).
+*   **Issue & Change Management**: Protocols for model drift, retraining, and incident response.
 
-The framework synthesizes:
+---
 
-- Risk-based AI system evaluation  
-- Regulatory interpretation and alignment  
-- Governance architecture structuring  
-- Operational security integration  
+## 🏗️ 2. Architectural Threat Models
+The following technical lifecycles are built using **Mermaid.js** for high-performance rendering. These diagrams visualize the intersection of technical threats and security controls.
 
-It is not a derivative template but an evolving governance construct intended for expansion.
+### **A. MLOps Security Lifecycle**
+Focuses on the classical machine learning pipeline, emphasizing data poisoning and model integrity.
+> *View the `docs/mlops-security-analysis.md` file for the live-rendered Mermaid diagram.*
 
-Future iterations may include:
+### **B. GenAI & LLM Security (Advanced RAG)**
+A complex mapping of the **OWASP Top 10 for LLMs** onto a Retrieval-Augmented Generation architecture.
+> *Includes specific mitigations for Prompt Injection (LLM01) and Excessive Agency (LLM06).*
 
-- Formal control mapping  
-- Policy blueprint models  
-- AI security maturity assessment frameworks  
-- Governance-to-technical control traceability  
+---
+
+## 📊 3. Interactive AI/ML Tool Risk Matrix
+This module is a **functional, interactive dashboard** designed to quantify the risk of third-party AI tools.
+
+<img width="653" height="369" alt="image" src="https://github.com/user-attachments/assets/e5eacc1d-36d5-454f-99fd-e6de703f7c9c" />
+
+### **Interactive Navigation Instructions**
+Unlike the static diagrams above, this matrix is fully interactive within the AISEC environment:
+*   **Risk Wheel Exploration**: Click on any **Colored Dot** or **Quadrant** (T1-T3) on the "Risk Assessment Wheel" to filter tools by their criticality.
+*   **Tool Deep-Dive**: Select the **"Tool Details"** buttons or specific tool labels (e.g., *Customer Data AI*) to view real-time scores for **Business Impact** and **Data Sensitivity**.
+*   **Assessment Framework**: The matrix maps tools along the Y-axis (Strategic Impact) and X-axis (Data Sensitivity).
+
+---
+
+## 📂 Technical Stack
+*   **Diagramming**: Mermaid.js for version-controlled architectural modeling.
+*   **Visualization**: Custom interactive dashboards for risk classification.
+*   **Documentation**: Markdown-based threat analysis and mitigation strategies.
+
+
+---
+© 2024 Ananya Kasiraj | AISEC Framework
+
 
