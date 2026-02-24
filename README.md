@@ -10,9 +10,14 @@
 
 ## 📌 Overview
 
-AISEC is an original AI Security Governance framework designed to model how organizations can systematically manage AI-related risk across regulatory, operational, and enterprise environments.
+## Context
 
-This repository represents structured governance planning informed by research and practical exposure to AI/ML operational contexts.
+This repository contains independent technical explorations inspired by
+my work in Information Security, focusing on securing AI/ML systems
+deployed in production environments.
+
+All implementations and analyses are personal learning and research
+efforts and do not contain proprietary company information.
 
 It bridges:
 
