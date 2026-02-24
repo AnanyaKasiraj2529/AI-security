@@ -1,4 +1,5 @@
 1️⃣ Lifecycle-Based Threat Analysis
+
 🔹 Data Collection & Preprocessing
 | Threat                           | Description                                        | Root Cause                           | Affected Components         | Mitigation                                                      | Impact   | Likelihood |
 | -------------------------------- | -------------------------------------------------- | ------------------------------------ | --------------------------- | --------------------------------------------------------------- | -------- | ---------- |
